@@ -1,4 +1,5 @@
 " Configuration file for vim
+let mapleader=" "
 set modelines=0		" CVE-2007-2438
 
 " Normally we use vim-extensions. If you want true vi-compatibility
@@ -17,6 +18,11 @@ set mouse=a
 set tabstop=4 " 设置制表符(TAB)的宽度(以空格数量来表示)
 set shiftwidth=4 " 设置移位操作 >> 或 << 的缩进长度
 set expandtab " 使用空格代替制表符,可能会导致 Python 等依赖于制表符的编程语言出>现问题.
+set encoding=utf-8
+
+let &t_SI.="\e[5 q" "SI = INSERT mode
+let &t_SR.="\e[4 q" "SR = REPLACE mode
+let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
 
 "set noexpandtab " 不要用空格代替制表符
 set foldmethod=marker " 使用marker折叠
@@ -25,23 +31,55 @@ set number " 显示行号
 set autowrite " 自动保存
 set ruler " 显示打开状态栏标尺
 set cursorline " 突出显示当前行
+set wildmenu
+set smartcase
+exec "nohlsearch"
 
 set showmatch " 匹配光标所经过的括号等.
 set showcmd " 命令行显示输入的命令
 set showmode " 命令行显示vim当前模式
 set hlsearch " 高亮搜索内容的所有匹配位置
 set incsearch " 搜索过程中动态显示匹配内容
+
+"打开文件默认定位上次关闭的地方
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+syntax on
+
 vmap <C-x> :!pbcopy<CR>
 vmap <C-c> y:call system("pbcopy", getreg("\""))<CR>
-"vmap y :w !pbcopy<CR><CR>
+
+map s <nop>
+map S :w<CR>
+
+"tab页
+noremap tb :tabe<CR>
+noremap tw :tabc<CR>
+noremap tl :-tabnext<CR>
+noremap th :+tabnext<CR>
+
+"分屏
+map sl :set splitright<CR>:vsplit<CR>
+map sh :set nosplitright<CR>:vsplit<CR>
+map sj :set splitbelow<CR>:split<CR>
+map sj :set nosplitbelow<CR>:split<CR>
+map <LEADER>l <C-w>l 
+map <LEADER>h <C-w>h
+map <LEADER>j <C-w>j
+map <LEADER>k <C-w>k
+map <right> :vertical resize -5<CR>
+map <left> :vertical resize +5<CR>
+map <up> :res +5<CR>
+map <down> :res -5<CR>
+map sv <C-w>t<C-w>H
+map ss <C-w>t<C-w>K
+
 "molokai配色
 let g:rehash256 = 1
 colorscheme molokai
-"noremap <C-S-l> <esc>:Autoformat<cr>
+
 noremap af :Autoformat
 inoremap <c-l> <esc>
-syntax on
-
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'Chiel92/vim-autoformat'
@@ -67,7 +105,7 @@ set tags+=/Users/momo/Desktop/software/php-7.0.32/tags
 
 "nerdtree配置
 let NERDTreeIgnore = ['\.pyc$', '\.swp', '\.swo', '\.vscode', '__pycache__', '.idea']
-noremap :ntt :NERDTreeToggle<CR> 
+map tt :NERDTreeToggle<CR> 
 ""gutentags设置
 let g:gutentags_project_root = ['.root', '.svn', '.git', '.project']
 """ 所生成的数据文件的名称 "
